@@ -179,3 +179,22 @@ body.touch .controls span:not(.touchOnly) { display: none; }
 
 /* Long move names (LIGHTNING, PHASE SHARDS) must fit inside the round buttons */
 #tbBeam span, #tbAbility span { font-size: 9px; letter-spacing: 0; }
+
+#iosTip { width: 100%; color: #ffe27a; font-size: 13px; }
+/* Short landscape phones (e.g. iPhone in Safari with toolbars): keep buttons clear of the HUD and each other */
+@media (orientation: landscape) and (max-height: 450px) {
+  .tb { width: 54px; height: 54px; }
+  #tbPunch { width: 76px; height: 76px; right: calc(18px + env(safe-area-inset-right)); bottom: 14px; }
+  #tbBeam { right: calc(104px + env(safe-area-inset-right)); bottom: 10px; }
+  #tbAbility { right: calc(16px + env(safe-area-inset-right)); bottom: 100px; }
+  #tbDash { width: 50px; height: 50px; right: calc(94px + env(safe-area-inset-right)); bottom: 76px; }
+  #tbBlock { width: 50px; height: 50px; right: calc(172px + env(safe-area-inset-right)); bottom: 12px; }
+  #tbPause { width: 40px; height: 40px; right: calc(16px + env(safe-area-inset-right)); top: 62px; }
+  #tbUp, #tbDown { width: 42px; height: 42px; left: calc(12px + env(safe-area-inset-left)); }
+  #tbUp { bottom: 140px; }
+  #tbDown { bottom: 88px; }
+  #joyBase { left: calc(150px + env(safe-area-inset-left)); top: calc(100% - 90px); width: 110px; height: 110px; }
+  #joyZone { height: 70%; }
+  #center { font-size: 52px; }
+  #rotateTip { display: none !important; }
+}

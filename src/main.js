@@ -386,6 +386,10 @@ function buildMenu() {
 const DEMO = location.hash.startsWith('#demo');
 const FAST = DEMO && location.hash.includes('fast');
 buildMenu();
+// iPhone Safari can't hide its toolbars; installing to the home screen gives true full screen
+const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches;
+if (isIOS && !standalone) $('iosTip').classList.remove('hidden');
 window.__g = game; // handy for debugging from the browser console
 setWorld(presetLocation(game.settings.arena));
 requestAnimationFrame(frame);
