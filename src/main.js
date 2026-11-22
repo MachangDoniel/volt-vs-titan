@@ -27,8 +27,10 @@ const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.5, 0.8));
 composer.addPass(new OutputPass());
+const fitCamera = () => { camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < 1 ? 85 : 65; camera.updateProjectionMatrix(); };
+fitCamera();
 addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  fitCamera();
   renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
 });
 const warpFx = new WarpStreaks(camera);
@@ -373,10 +375,6 @@ function buildMenu() {
   const setPaused = (p) => { game.paused = p; $('pause').classList.toggle('hidden', !p); if (p) touch?.release(); };
   $('resumeBtn').onclick = () => setPaused(false);
   $('tbPause').onclick = () => setPaused(true);
-  // Turning a phone upright mid-fight pauses the game
-  matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
-    if (e.matches && touch && ['intro', 'fight', 'warp'].includes(game.state) && !game.paused) setPaused(true);
-  });
   $('quitBtn').onclick = toMenu;
   addEventListener('keydown', (e) => {
     if (e.code !== 'Escape' || game.state === 'menu' || game.state === 'over') return;

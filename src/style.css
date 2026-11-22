@@ -125,10 +125,38 @@ body.touch .controls span:not(.touchOnly) { display: none; }
 #tbUp { left: calc(14px + env(safe-area-inset-left)); bottom: 230px; }
 #tbDown { left: calc(14px + env(safe-area-inset-left)); bottom: 176px; }
 #tbPause { right: calc(16px + env(safe-area-inset-right)); top: 96px; font-size: 12px; }
-#rotateHint { display: none; position: absolute; inset: 0; z-index: 2; background: rgb(5,6,13); white-space: normal; max-width: 100vw; pointer-events: auto;
-  flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 18px; font-weight: 700; text-align: center; padding: 24px; }
-#rotateHint div { font-size: 54px; }
-@media (orientation: portrait) { #rotateHint { display: flex; } }
+/* Portrait is fully playable; turning sideways is only suggested, briefly */
+#rotateTip { display: none; position: absolute; left: 50%; top: 118px; transform: translateX(-50%); pointer-events: none;
+  padding: 6px 12px; border-radius: 999px; background: rgba(12, 15, 32, 0.8); border: 1px solid var(--line);
+  font-size: 12px; white-space: nowrap; opacity: 0; }
+@keyframes tipfade { 0%, 100% { opacity: 0; } 8%, 80% { opacity: 1; } }
+@media (orientation: portrait) {
+  #rotateTip { display: block; animation: tipfade 6s ease forwards; }
+  /* Re-arrange the button cluster to leave room for the joystick on a narrow screen */
+  #tbPunch { width: 80px; height: 80px; right: calc(18px + env(safe-area-inset-right)); bottom: calc(24px + env(safe-area-inset-bottom)); }
+  #tbBeam { right: calc(110px + env(safe-area-inset-right)); bottom: calc(18px + env(safe-area-inset-bottom)); width: 58px; height: 58px; }
+  #tbAbility { right: calc(18px + env(safe-area-inset-right)); bottom: calc(118px + env(safe-area-inset-bottom)); width: 60px; height: 60px; }
+  #tbDash { right: calc(100px + env(safe-area-inset-right)); bottom: calc(96px + env(safe-area-inset-bottom)); width: 52px; height: 52px; }
+  #tbBlock { right: calc(22px + env(safe-area-inset-right)); bottom: calc(194px + env(safe-area-inset-bottom)); width: 54px; height: 54px; }
+  #joyZone { width: 46%; height: 62%; }
+  #joyBase { left: calc(92px + env(safe-area-inset-left)); top: calc(100% - 120px - env(safe-area-inset-bottom)); width: 116px; height: 116px; }
+  #tbUp { bottom: calc(262px + env(safe-area-inset-bottom)); }
+  #tbDown { bottom: calc(208px + env(safe-area-inset-bottom)); }
+  #tbPause { top: calc(118px + env(safe-area-inset-top)); }
+  /* HUD: round info drops below the health bars */
+  #hud .side { top: calc(10px + env(safe-area-inset-top)); width: 42vw; }
+  #hud .mid { top: calc(70px + env(safe-area-inset-top)); }
+  #hud .name { font-size: 13px; letter-spacing: 1px; }
+  #center { top: 40%; }
+  /* Menu: two compact hero cards per row */
+  .card { width: calc(50% - 8px); max-width: 220px; padding: 8px 10px; }
+  .card .nm { font-size: 18px; }
+  .card p:not(.mv), .card .st { display: none; }
+  .cards { gap: 8px; }
+  h1 { font-size: 40px; }
+  .seg { flex-wrap: wrap; justify-content: center; }
+  .seg button { padding: 7px 10px; }
+}
 
 /* Compact menu for short landscape phone screens */
 @media (max-height: 520px) {
@@ -148,3 +176,6 @@ body.touch .controls span:not(.touchOnly) { display: none; }
 }
 
 #menu, #over, #pause { z-index: 10; }
+
+/* Long move names (LIGHTNING, PHASE SHARDS) must fit inside the round buttons */
+#tbBeam span, #tbAbility span { font-size: 9px; letter-spacing: 0; }
