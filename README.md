@@ -1,5 +1,7 @@
 # VOLT vs TITAN
 
+**▶ Play now in your browser: https://machangdoniel.github.io/volt-vs-titan/**
+
 A 3D superhero duel across a procedurally generated universe that runs in the browser. Built with Three.js and Vite, and all original characters.
 
 **Heroes** (stats and moves live in `src/fighter.js`):
