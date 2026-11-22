@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05060d">
+<meta name="description" content="A 3D superhero duel across procedurally generated star systems. Free browser game.">
+<title>Volt vs Titan</title>
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="slowfx"></div>
+<div id="flash"></div>
+<div id="banner"><div id="bannerSector"></div><div id="bannerName"></div><div id="bannerType"></div></div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <div class="side left">
+    <div class="name" id="p1name">VOLT</div>
+    <div class="bar hp"><i id="p1hp"></i></div>
+    <div class="bar en"><i id="p1en"></i></div>
+    <div class="wins" id="p1wins"></div>
+  </div>
+  <div class="mid"><div id="roundLabel">ROUND 1</div><div id="sectorLabel"></div><div id="warpReady"></div></div>
+  <div class="side right">
+    <div class="name" id="p2name">TITAN</div>
+    <div class="bar hp"><i id="p2hp"></i></div>
+    <div class="bar en"><i id="p2en"></i></div>
+    <div class="wins" id="p2wins"></div>
+  </div>
+  <div id="skills">
+    <div class="skill" id="skMelee"><b>J</b><span>Punch</span><i></i></div>
+    <div class="skill" id="skBeam"><b>K</b><span id="beamName">Beam</span><i></i></div>
+    <div class="skill" id="skDash"><b>Shift</b><span>Dash</span><i></i></div>
+    <div class="skill" id="skAbility"><b>Q</b><span id="abilityName">Ability</span><i></i></div>
+    <div class="skill"><b>F</b><span>Block</span></div>
+  </div>
+</div>
+<div id="center"></div>
+<div id="combo"></div>
+
+<!-- Menu -->
+<div id="menu">
+  <h1>VOLT <em>vs</em> TITAN</h1>
+  <p class="tag">A duel across the cosmos. Land a 3-hit combo to launch your enemy into the next star system.</p>
+  <h2>Choose your hero</h2>
+  <div class="cards" id="heroCards"></div>
+  <div class="row">
+    <div>
+      <h2>Difficulty</h2>
+      <div class="seg" id="diffSeg">
+        <button data-v="easy">Easy</button><button data-v="normal" class="on">Normal</button><button data-v="hard">Hard</button>
+      </div>
+    </div>
+    <div>
+      <h2>Opponent</h2>
+      <div class="seg" id="oppSeg"></div>
+    </div>
+    <div>
+      <h2>Starting arena</h2>
+      <div class="seg" id="arenaSeg"></div>
+    </div>
+  </div>
+  <button id="startBtn" class="big">FIGHT</button>
+  <div class="controls">
+    <span><b>W A S D</b> move</span><span><b>Space / C</b> up / down</span>
+    <span><b>J</b> or <b>Left click</b> punch</span><span><b>K</b> or <b>Right click</b> beam</span>
+    <span><b>Shift</b> dash</span><span><b>Q</b> special</span><span><b>F</b> block</span><span><b>Esc</b> pause</span>
+  </div>
+</div>
+
+<!-- Game over -->
+<div id="over" class="hidden">
+  <h1 id="overTitle">VICTORY</h1>
+  <p id="overSub"></p>
+  <div class="btns"><button id="rematchBtn" class="big">REMATCH</button><button id="menuBtn">Main menu</button></div>
+</div>
+
+<!-- Pause -->
+<div id="pause" class="hidden">
+  <h1>PAUSED</h1>
+  <div class="btns"><button id="resumeBtn" class="big">RESUME</button><button id="quitBtn">Quit to menu</button></div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
