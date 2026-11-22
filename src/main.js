@@ -374,7 +374,6 @@ function buildMenu() {
   $('menuBtn').onclick = toMenu;
   const setPaused = (p) => { game.paused = p; $('pause').classList.toggle('hidden', !p); if (p) touch?.release(); };
   $('resumeBtn').onclick = () => setPaused(false);
-  $('tbPause').onclick = () => setPaused(true);
   $('quitBtn').onclick = toMenu;
   addEventListener('keydown', (e) => {
     if (e.code !== 'Escape' || game.state === 'menu' || game.state === 'over') return;

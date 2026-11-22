@@ -124,7 +124,6 @@ body.touch .controls span:not(.touchOnly) { display: none; }
 #tbBlock { right: calc(204px + env(safe-area-inset-right)); bottom: 20px; width: 56px; height: 56px; }
 #tbUp { left: calc(14px + env(safe-area-inset-left)); bottom: 230px; }
 #tbDown { left: calc(14px + env(safe-area-inset-left)); bottom: 176px; }
-#tbPause { right: calc(16px + env(safe-area-inset-right)); top: 96px; font-size: 12px; }
 /* Portrait is fully playable; turning sideways is only suggested, briefly */
 #rotateTip { display: none; position: absolute; left: 50%; top: 118px; transform: translateX(-50%); pointer-events: none;
   padding: 6px 12px; border-radius: 999px; background: rgba(12, 15, 32, 0.8); border: 1px solid var(--line);
@@ -142,7 +141,6 @@ body.touch .controls span:not(.touchOnly) { display: none; }
   #joyBase { left: calc(92px + env(safe-area-inset-left)); top: calc(100% - 120px - env(safe-area-inset-bottom)); width: 116px; height: 116px; }
   #tbUp { bottom: calc(262px + env(safe-area-inset-bottom)); }
   #tbDown { bottom: calc(208px + env(safe-area-inset-bottom)); }
-  #tbPause { top: calc(118px + env(safe-area-inset-top)); }
   /* HUD: round info drops below the health bars */
   #hud .side { top: calc(10px + env(safe-area-inset-top)); width: 42vw; }
   #hud .mid { top: calc(70px + env(safe-area-inset-top)); }
@@ -189,7 +187,6 @@ body.touch .controls span:not(.touchOnly) { display: none; }
   #tbAbility { right: calc(16px + env(safe-area-inset-right)); bottom: 100px; }
   #tbDash { width: 50px; height: 50px; right: calc(94px + env(safe-area-inset-right)); bottom: 76px; }
   #tbBlock { width: 50px; height: 50px; right: calc(172px + env(safe-area-inset-right)); bottom: 12px; }
-  #tbPause { width: 40px; height: 40px; right: calc(16px + env(safe-area-inset-right)); top: 62px; }
   #tbUp, #tbDown { width: 42px; height: 42px; left: calc(12px + env(safe-area-inset-left)); }
   #tbUp { bottom: 140px; }
   #tbDown { bottom: 88px; }
