@@ -9,13 +9,15 @@ import { AIController } from './ai.js';
 import { Effects, WarpStreaks } from './effects.js';
 import { spawnProjectile, updateProjectiles, clearProjectiles } from './combat.js';
 import { basis } from './util.js';
+import { isTouch, TouchControls } from './touch.js';
 
 const $ = (id) => document.getElementById(id);
 const WARP_COOLDOWN = 12; // seconds in a system before a launch can warp again
 
 // ---------- Renderer ----------
 const renderer = new THREE.WebGLRenderer({ canvas: $('c'), antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// Phones: render at a lower pixel ratio to keep the frame rate up
+renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const scene = new THREE.Scene();
@@ -60,10 +62,13 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keyup', (e) => keys.delete(e.code));
 addEventListener('blur', () => { keys.clear(); mouse.l = mouse.r = false; });
-$('c').addEventListener('mousedown', (e) => { if (e.button === 0) mouse.l = true; if (e.button === 2) mouse.r = true; });
+$('c').addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') return; if (e.button === 0) mouse.l = true; if (e.button === 2) mouse.r = true; });
 addEventListener('mouseup', (e) => { if (e.button === 0) mouse.l = false; if (e.button === 2) mouse.r = false; });
 addEventListener('contextmenu', (e) => e.preventDefault());
 const k = (...codes) => codes.some((c) => keys.has(c)) ? 1 : 0;
+const touch = isTouch ? new TouchControls($('touch')) : null;
+document.body.classList.toggle('touch', !!touch);
+const showTouch = (on) => { if (!touch) return; $('touch').classList.toggle('hidden', !on); if (!on) touch.release(); };
 
 // ---------- Game state ----------
 const game = {
@@ -126,7 +131,9 @@ function startMatch() {
   game.wins = [0, 0]; game.round = 1;
   $('p1name').textContent = pDef.name + ' (YOU)'; $('p2name').textContent = cDef.name;
   $('beamName').textContent = pDef.beam.name; $('abilityName').textContent = pDef.ability.name;
-  show('hud'); hide('menu'); hide('over');
+  $('tbBeamName').textContent = pDef.beam.name.toUpperCase(); $('tbAbilityName').textContent = pDef.ability.name.toUpperCase();
+  show('hud'); hide('menu'); hide('over'); showTouch(true);
+  if (touch) { document.documentElement.requestFullscreen?.().then(() => screen.orientation?.lock?.('landscape')).catch(() => {}); }
   showBanner();
   startRound();
 }
@@ -174,24 +181,24 @@ function toMenu() {
   cleanup();
   setWorld(presetLocation(game.settings.arena === 'random' ? 'deep' : game.settings.arena));
   game.state = 'menu'; game.paused = false;
-  hide('hud'); hide('over'); hide('pause'); show('menu'); $('center').textContent = '';
+  hide('hud'); hide('over'); hide('pause'); show('menu'); showTouch(false); $('center').textContent = '';
   $('banner').classList.remove('show');
 }
 
 // ---------- Per-frame ----------
 function playerIntent() {
   const { fwd, right } = basis(game.cpu.pos.clone().sub(game.player.pos), playerBasis);
-  const move = new THREE.Vector3()
-    .addScaledVector(fwd, k('KeyW', 'ArrowUp') - k('KeyS', 'ArrowDown'))
-    .addScaledVector(right, k('KeyD', 'ArrowRight') - k('KeyA', 'ArrowLeft'))
-    .add(new THREE.Vector3(0, k('Space') - k('KeyC', 'ControlLeft'), 0));
+  let f = k('KeyW', 'ArrowUp') - k('KeyS', 'ArrowDown'), s = k('KeyD', 'ArrowRight') - k('KeyA', 'ArrowLeft'), v = k('Space') - k('KeyC', 'ControlLeft');
+  const th = touch?.held, tp = touch?.pressed;
+  if (touch) { const st = touch.stick; f += st.forward; s += st.strafe; v += (th.has('up') ? 1 : 0) - (th.has('down') ? 1 : 0); }
+  const move = new THREE.Vector3().addScaledVector(fwd, f).addScaledVector(right, s).add(new THREE.Vector3(0, v, 0));
   return {
     move,
-    punch: k('KeyJ') || mouse.l,
-    beam: k('KeyK') || mouse.r,
-    dash: pressed.has('ShiftLeft') || pressed.has('ShiftRight'),
-    ability: pressed.has('KeyQ'),
-    block: !!k('KeyF'),
+    punch: k('KeyJ') || mouse.l || !!th?.has('punch'),
+    beam: k('KeyK') || mouse.r || !!th?.has('beam'),
+    dash: pressed.has('ShiftLeft') || pressed.has('ShiftRight') || !!tp?.has('dash'),
+    ability: pressed.has('KeyQ') || !!tp?.has('ability'),
+    block: !!k('KeyF') || !!th?.has('block'),
   };
 }
 
@@ -269,7 +276,7 @@ function update(dt, realDt) {
         game.state = 'over';
         $('overTitle').textContent = won ? 'VICTORY' : 'DEFEAT';
         $('overSub').textContent = `${P.def.name} ${game.wins[0]} : ${game.wins[1]} ${C.def.name} · reached sector ${game.sector}`;
-        show('over');
+        show('over'); showTouch(false);
       } else { game.round++; startRound(); }
     }
   }
@@ -307,6 +314,12 @@ function updateHud() {
   cd('skBeam', P.cd.beam, d.beam.cd, d.beam.cost);
   cd('skDash', P.cd.dash, d.dashCd, 10);
   cd('skAbility', P.cd.ability, d.ability.cd, d.ability.cost);
+  if (touch) {
+    cd('tbPunch', P.cd.melee, d.melee.cd + d.melee.windup);
+    cd('tbBeam', P.cd.beam, d.beam.cd, d.beam.cost);
+    cd('tbDash', P.cd.dash, d.dashCd, 10);
+    cd('tbAbility', P.cd.ability, d.ability.cd, d.ability.cost);
+  }
 }
 
 let last = performance.now();
@@ -321,7 +334,7 @@ function frame(now) {
     if (game.state === 'ko') dt *= 0.35;
     update(dt, stepDt);
   }
-  pressed.clear();
+  pressed.clear(); touch?.endFrame();
   composer.render();
 }
 
@@ -357,11 +370,17 @@ function buildMenu() {
   $('startBtn').onclick = startMatch;
   $('rematchBtn').onclick = startMatch;
   $('menuBtn').onclick = toMenu;
-  $('resumeBtn').onclick = () => { game.paused = false; hide('pause'); };
+  const setPaused = (p) => { game.paused = p; $('pause').classList.toggle('hidden', !p); if (p) touch?.release(); };
+  $('resumeBtn').onclick = () => setPaused(false);
+  $('tbPause').onclick = () => setPaused(true);
+  // Turning a phone upright mid-fight pauses the game
+  matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
+    if (e.matches && touch && ['intro', 'fight', 'warp'].includes(game.state) && !game.paused) setPaused(true);
+  });
   $('quitBtn').onclick = toMenu;
   addEventListener('keydown', (e) => {
     if (e.code !== 'Escape' || game.state === 'menu' || game.state === 'over') return;
-    game.paused = !game.paused; $('pause').classList.toggle('hidden', !game.paused);
+    setPaused(!game.paused);
   });
 }
 
@@ -369,6 +388,7 @@ function buildMenu() {
 const DEMO = location.hash.startsWith('#demo');
 const FAST = DEMO && location.hash.includes('fast');
 buildMenu();
+window.__g = game; // handy for debugging from the browser console
 setWorld(presetLocation(game.settings.arena));
 requestAnimationFrame(frame);
 if (DEMO) {

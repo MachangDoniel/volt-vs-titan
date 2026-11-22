@@ -93,3 +93,58 @@ h2 { margin: 6px 0; font-size: 13px; letter-spacing: 3px; text-transform: upperc
 #bannerType { font-size: 14px; letter-spacing: 3px; color: #9fc8ff; text-transform: uppercase; }
 @keyframes banner { 0% { opacity: 0; transform: translate(-50%, 10px); } 12%, 75% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 @media (max-width: 600px) { #warpReady, #sectorLabel { display: none; } .card { width: 100%; max-width: 320px; } }
+
+/* ---------- Touch controls ---------- */
+html, body { touch-action: none; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+#menu, #over, #pause { touch-action: pan-y; }
+.touchOnly { display: none; }
+body.touch .touchOnly { display: block; width: 100%; color: var(--fg); }
+body.touch #skills { display: none; }
+body.touch .controls span:not(.touchOnly) { display: none; }
+#touch { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+#joyZone { position: absolute; left: 0; bottom: 0; width: 48%; height: 78%; pointer-events: auto; }
+#joyBase { position: absolute; left: calc(110px + env(safe-area-inset-left)); top: calc(100% - 110px); width: 124px; height: 124px;
+  transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.05);
+  pointer-events: none; opacity: 0.55; transition: opacity .15s; }
+#joyBase.active { opacity: 1; transition: none; }
+#joyKnob { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%;
+  background: rgba(255,255,255,0.28); border: 2px solid rgba(255,255,255,0.5); }
+.tb { position: absolute; pointer-events: auto; border-radius: 50%; width: 64px; height: 64px; padding: 0; overflow: hidden;
+  background: rgba(20, 26, 52, 0.55); border: 2px solid rgba(160, 180, 255, 0.35); color: var(--fg);
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center;
+  touch-action: none; user-select: none; -webkit-user-select: none; }
+.tb span { position: relative; z-index: 1; line-height: 1.1; padding: 0 4px; }
+.tb i { position: absolute; left: 0; bottom: 0; width: 100%; height: calc(var(--cd, 0) * 100%); background: rgba(0,0,0,0.6); }
+.tb.down { background: rgba(255, 210, 31, 0.45); border-color: #ffd21f; transform: scale(0.94); }
+.tb.small { width: 46px; height: 46px; font-size: 14px; }
+#tbPunch { width: 88px; height: 88px; font-size: 13px; right: calc(24px + env(safe-area-inset-right)); bottom: 24px; border-color: rgba(255, 210, 31, 0.6); }
+#tbBeam { right: calc(126px + env(safe-area-inset-right)); bottom: 18px; }
+#tbAbility { right: calc(20px + env(safe-area-inset-right)); bottom: 126px; border-color: rgba(255, 90, 240, 0.6); }
+#tbDash { right: calc(112px + env(safe-area-inset-right)); bottom: 100px; width: 56px; height: 56px; }
+#tbBlock { right: calc(204px + env(safe-area-inset-right)); bottom: 20px; width: 56px; height: 56px; }
+#tbUp { left: calc(14px + env(safe-area-inset-left)); bottom: 230px; }
+#tbDown { left: calc(14px + env(safe-area-inset-left)); bottom: 176px; }
+#tbPause { right: calc(16px + env(safe-area-inset-right)); top: 96px; font-size: 12px; }
+#rotateHint { display: none; position: absolute; inset: 0; z-index: 2; background: rgb(5,6,13); white-space: normal; max-width: 100vw; pointer-events: auto;
+  flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 18px; font-weight: 700; text-align: center; padding: 24px; }
+#rotateHint div { font-size: 54px; }
+@media (orientation: portrait) { #rotateHint { display: flex; } }
+
+/* Compact menu for short landscape phone screens */
+@media (max-height: 520px) {
+  h1 { font-size: 34px; }
+  .tag { font-size: 12px; margin: 0; }
+  h2 { margin: 2px 0; font-size: 11px; }
+  #menu, #over, #pause { gap: 8px; padding: 10px 16px; }
+  .card { width: 138px; padding: 8px 10px; }
+  .card .nm { font-size: 18px; }
+  .card p:not(.mv), .card .st { display: none; }
+  .card .mv { font-size: 11px; margin-top: 4px; }
+  .seg button { padding: 6px 9px; font-size: 13px; }
+  button.big { font-size: 17px; padding: 9px 32px; }
+  #hud .name { font-size: 13px; }
+  #hud .side { top: 8px; width: 33vw; }
+  #hud .mid { top: 6px; }
+}
+
+#menu, #over, #pause { z-index: 10; }

@@ -29,6 +29,8 @@ Matches are best of 3 against an AI opponent (Easy / Normal / Hard). You can pic
 | F (hold) | Block (blocked hits deal 75% less damage, but drain energy) |
 | Esc | Pause |
 
+**On a phone or tablet:** hold the phone sideways. Your left thumb steers with the floating joystick, and your right thumb uses PUNCH, beam, special, DASH and BLOCK (hold). ▲ ▼ fly up and down, and ❚❚ pauses. Turning the phone upright pauses automatically.
+
 ## Run locally
 ```bash
 npm install
@@ -42,7 +44,8 @@ Add `#demo` to the URL to watch AI vs AI. Optional flags, joined with `-`: an ar
 - `src/combat.js`: projectiles (homing, spread, chill)
 - `src/ai.js`: AI opponent
 - `src/world.js`: procedural star systems, hazards, asteroids, starfield
-- `src/effects.js`: particles and shockwave rings
+- `src/effects.js`: particles, shockwave rings, warp streaks
+- `src/touch.js`: on-screen joystick and buttons for phones
 
 ## Deploy (free)
 ```bash
